@@ -2,60 +2,116 @@ import { useState, useEffect } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
 import ReadingScreen from './components/ReadingScreen';
 import ResultScreen from './components/ResultScreen';
+import WordGameScreen from './components/WordGameScreen';
+import WordGameResult from './components/WordGameResult';
 
 const LOCAL_PASSAGES = [
   {
     id: 1, level: 1, title: '小明和小狗',
     text: '小明在公園裡玩耍。他看見一隻小狗跑來跑去。小狗很開心，小明也笑了。',
     questions: [
-      { id: '1-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在公園裡玩耍？',  keywords: ['小明'],             hint: '看看文章的第一句話' },
-      { id: '1-2', type: 'where', label: '哪裡',  icon: '📍', question: '小明在哪裡玩耍？',  keywords: ['公園'],             hint: '文章一開始就說了地點喔' },
-      { id: '1-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小狗在做什麼？',   keywords: ['跑'],               hint: '小狗的動作在第二句話裡' }
+      { id: '1-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在公園裡玩耍？',  keywords: ['小明'],            hint: '看看文章的第一句話' },
+      { id: '1-2', type: 'where', label: '哪裡',  icon: '📍', question: '小明在哪裡玩耍？',  keywords: ['公園'],            hint: '文章一開始就說了地點喔' },
+      { id: '1-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小狗在做什麼？',   keywords: ['跑'],              hint: '小狗的動作在第二句話裡' }
     ]
   },
   {
     id: 2, level: 1, title: '媽媽煮飯',
     text: '媽媽在廚房煮飯。她做了香噴噴的炒飯。爸爸和弟弟一起吃飯，大家都說好吃。',
     questions: [
-      { id: '2-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在廚房煮飯？',   keywords: ['媽媽'],             hint: '文章第一句話就告訴你了' },
-      { id: '2-2', type: 'where', label: '哪裡',  icon: '📍', question: '媽媽在哪裡煮飯？', keywords: ['廚房'],             hint: '媽媽煮飯的地方在第一句' },
-      { id: '2-3', type: 'what',  label: '做什麼', icon: '🎯', question: '媽媽在做什麼？',  keywords: ['煮飯','煮','炒飯'],  hint: '媽媽在廚房裡做的事情是什麼？' }
+      { id: '2-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在廚房煮飯？',   keywords: ['媽媽'],            hint: '文章第一句話就告訴你了' },
+      { id: '2-2', type: 'where', label: '哪裡',  icon: '📍', question: '媽媽在哪裡煮飯？', keywords: ['廚房'],            hint: '媽媽煮飯的地方在第一句' },
+      { id: '2-3', type: 'what',  label: '做什麼', icon: '🎯', question: '媽媽在做什麼？',  keywords: ['煮飯','煮','炒飯'], hint: '媽媽在廚房裡做的事情是什麼？' }
+    ]
+  },
+  {
+    id: 7, level: 1, title: '去市場買菜',
+    text: '小花和媽媽去市場買菜。她們買了番茄和青菜。媽媽說蔬菜很新鮮，要多吃才健康。',
+    questions: [
+      { id: '7-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去市場買菜？',  keywords: ['小花','媽媽'],           hint: '文章第一句話就說了' },
+      { id: '7-2', type: 'where', label: '哪裡',  icon: '📍', question: '她們去哪裡？',    keywords: ['市場'],                  hint: '她們去買菜的地方' },
+      { id: '7-3', type: 'what',  label: '做什麼', icon: '🎯', question: '她們買了什麼？', keywords: ['番茄','青菜','菜','蔬菜'], hint: '文章第二句話說她們買了什麼' }
+    ]
+  },
+  {
+    id: 8, level: 1, title: '下雨天上學',
+    text: '今天天空下起了大雨。小明拿起雨傘出門上學。走到學校時，他的鞋子還是濕掉了。',
+    questions: [
+      { id: '8-1', type: 'who',   label: '誰',    icon: '👤', question: '誰拿起雨傘出門？',   keywords: ['小明'],       hint: '文章第二句話說了' },
+      { id: '8-2', type: 'where', label: '哪裡',  icon: '📍', question: '小明要去哪裡？',     keywords: ['學校'],       hint: '小明出門要去的地方' },
+      { id: '8-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小明的什麼濕掉了？', keywords: ['鞋子','鞋'],  hint: '看看最後一句話' }
     ]
   },
   {
     id: 3, level: 2, title: '爬山去',
     text: '小華和同學一起去爬山。山上有很多漂亮的花。他們走了很久，大家都累了。後來坐下來吃點心休息。',
     questions: [
-      { id: '3-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去爬山？',           keywords: ['小華','同學'],       hint: '文章的第一句話說得很清楚' },
-      { id: '3-2', type: 'where', label: '哪裡',  icon: '📍', question: '他們去哪裡？',         keywords: ['山','爬山'],         hint: '他們去的地方和爬有關係' },
-      { id: '3-3', type: 'what',  label: '做什麼', icon: '🎯', question: '大家累了以後做什麼？', keywords: ['點心','吃','休息'],   hint: '看看文章最後一句話' }
+      { id: '3-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去爬山？',           keywords: ['小華','同學'],      hint: '文章的第一句話說得很清楚' },
+      { id: '3-2', type: 'where', label: '哪裡',  icon: '📍', question: '他們去哪裡？',         keywords: ['山','爬山'],        hint: '他們去的地方和爬有關係' },
+      { id: '3-3', type: 'what',  label: '做什麼', icon: '🎯', question: '大家累了以後做什麼？', keywords: ['點心','吃','休息'], hint: '看看文章最後一句話' }
     ]
   },
   {
     id: 4, level: 2, title: '畫畫課',
     text: '老師在教室教大家畫畫。小朋友們畫了很多美麗的圖畫。有的畫花，有的畫動物。老師說大家都畫得很好。',
     questions: [
-      { id: '4-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在教大家畫畫？',   keywords: ['老師'],             hint: '文章第一句話就說了' },
-      { id: '4-2', type: 'where', label: '哪裡',  icon: '📍', question: '老師在哪裡教畫畫？', keywords: ['教室'],             hint: '老師教畫畫的地方在第一句' },
-      { id: '4-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小朋友們在做什麼？', keywords: ['畫畫','畫'],         hint: '小朋友在課堂上做的事是什麼？' }
+      { id: '4-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在教大家畫畫？',   keywords: ['老師'],        hint: '文章第一句話就說了' },
+      { id: '4-2', type: 'where', label: '哪裡',  icon: '📍', question: '老師在哪裡教畫畫？', keywords: ['教室'],        hint: '老師教畫畫的地方在第一句' },
+      { id: '4-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小朋友們在做什麼？', keywords: ['畫畫','畫'],   hint: '小朋友在課堂上做的事是什麼？' }
+    ]
+  },
+  {
+    id: 9, level: 2, title: '春天的公園',
+    text: '春天來了，公園裡開滿了花。蝴蝶和蜜蜂在花叢中飛舞。小朋友們開心地在草地上玩耍，笑聲不斷。',
+    questions: [
+      { id: '9-1', type: 'who',   label: '誰',    icon: '👤', question: '誰在花叢中飛舞？',   keywords: ['蝴蝶','蜜蜂'],  hint: '文章第二句話說了' },
+      { id: '9-2', type: 'where', label: '哪裡',  icon: '📍', question: '小朋友在哪裡玩耍？', keywords: ['草地','公園'],  hint: '小朋友玩耍的地方' },
+      { id: '9-3', type: 'what',  label: '做什麼', icon: '🎯', question: '現在是什麼季節？',   keywords: ['春天','春'],    hint: '文章一開始就說了季節' }
+    ]
+  },
+  {
+    id: 10, level: 2, title: '爺爺的農場',
+    text: '爺爺住在鄉下的農場裡。農場裡有雞、鴨和牛。每次小明去看爺爺，最喜歡餵小雞吃東西。',
+    questions: [
+      { id: '10-1', type: 'who',   label: '誰',    icon: '👤', question: '誰住在農場裡？',      keywords: ['爺爺'],           hint: '文章第一句話就說了' },
+      { id: '10-2', type: 'where', label: '哪裡',  icon: '📍', question: '農場在哪裡？',        keywords: ['鄉下'],           hint: '農場在城市還是鄉下？' },
+      { id: '10-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小明最喜歡做什麼？', keywords: ['餵','雞','小雞'],  hint: '小明去看爺爺時最喜歡的事' }
     ]
   },
   {
     id: 5, level: 3, title: '海邊的貝殼',
     text: '小美和家人去海邊玩。海邊有很多沙子和貝殼。小美撿了很多漂亮的貝殼。爸爸說要保護海邊的環境。',
     questions: [
-      { id: '5-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去海邊玩？',       keywords: ['小美','家人'],       hint: '文章第一句話就有答案' },
-      { id: '5-2', type: 'where', label: '哪裡',  icon: '📍', question: '他們去哪裡玩？',     keywords: ['海邊','海'],         hint: '他們去的地方和海有關係' },
-      { id: '5-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小美在海邊做什麼？', keywords: ['撿','貝殼'],         hint: '看看文章第三句話' }
+      { id: '5-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去海邊玩？',       keywords: ['小美','家人'],    hint: '文章第一句話就有答案' },
+      { id: '5-2', type: 'where', label: '哪裡',  icon: '📍', question: '他們去哪裡玩？',     keywords: ['海邊','海'],      hint: '他們去的地方和海有關係' },
+      { id: '5-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小美在海邊做什麼？', keywords: ['撿','貝殼'],      hint: '看看文章第三句話' }
     ]
   },
   {
     id: 6, level: 3, title: '圖書館借書',
     text: '小東去圖書館借書。他找到一本很有趣的故事書。小東讀了很久才回家。媽媽說多看書對我們很有幫助。',
     questions: [
-      { id: '6-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去圖書館借書？',       keywords: ['小東'],                  hint: '文章第一句話就說了' },
-      { id: '6-2', type: 'where', label: '哪裡',  icon: '📍', question: '小東去哪裡借書？',       keywords: ['圖書館'],                hint: '小東去借書的地方在第一句' },
+      { id: '6-1', type: 'who',   label: '誰',    icon: '👤', question: '誰去圖書館借書？',        keywords: ['小東'],                  hint: '文章第一句話就說了' },
+      { id: '6-2', type: 'where', label: '哪裡',  icon: '📍', question: '小東去哪裡借書？',        keywords: ['圖書館'],                hint: '小東去借書的地方在第一句' },
       { id: '6-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小東在圖書館裡做了什麼？', keywords: ['借書','看書','讀','書'],  hint: '小東去圖書館的目的是什麼？' }
+    ]
+  },
+  {
+    id: 11, level: 3, title: '元宵節看花燈',
+    text: '元宵節那天，全家人一起去看花燈。街上掛著各種顏色的燈籠，非常漂亮。小美猜了很多燈謎，猜對了三題，大家都說她很聰明。',
+    questions: [
+      { id: '11-1', type: 'who',   label: '誰',    icon: '👤', question: '全家人去做什麼？',   keywords: ['花燈','燈'],   hint: '文章第一句話說了全家去做什麼' },
+      { id: '11-2', type: 'where', label: '哪裡',  icon: '📍', question: '他們在哪裡看花燈？', keywords: ['街上','街'],   hint: '花燈掛在哪裡？' },
+      { id: '11-3', type: 'what',  label: '做什麼', icon: '🎯', question: '小美做了什麼事？',   keywords: ['燈謎','猜'],   hint: '小美在看花燈時做的特別的事' }
+    ]
+  },
+  {
+    id: 12, level: 3, title: '院子裡的鳥巢',
+    text: '小強很喜歡觀察大自然。他在院子裡發現了一個鳥巢，巢裡有三顆藍色的蛋。小強每天都去看，等待小鳥孵出來。媽媽說這是很難得的發現。',
+    questions: [
+      { id: '12-1', type: 'who',   label: '誰',    icon: '👤', question: '誰發現了鳥巢？',     keywords: ['小強'],       hint: '文章第二句話說了誰發現' },
+      { id: '12-2', type: 'where', label: '哪裡',  icon: '📍', question: '鳥巢在哪裡？',       keywords: ['院子','院'],  hint: '小強在哪裡發現鳥巢的？' },
+      { id: '12-3', type: 'what',  label: '做什麼', icon: '🎯', question: '鳥巢裡有什麼？',     keywords: ['蛋','藍色'],  hint: '巢裡有幾顆什麼顏色的東西？' }
     ]
   }
 ];
@@ -68,12 +124,13 @@ export default function App() {
   const [currentPassage, setCurrentPassage] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [unlockedLevels, setUnlockedLevels] = useState([1]);
+  const [wordGameLevel, setWordGameLevel] = useState(1);
+  const [wordGameScore, setWordGameScore] = useState(0);
 
   useEffect(() => {
     fetch('/api/passages')
       .then(r => r.json())
       .then(apiData => {
-        // Merge API data with local keywords so offline fallback still works
         const merged = apiData.map(apiPassage => {
           const local = LOCAL_PASSAGES.find(p => p.id === apiPassage.id);
           return {
@@ -89,7 +146,7 @@ export default function App() {
       .catch(() => {});
   }, []);
 
-  function startLevel(level) {
+  function startReading(level) {
     const queue = passages.filter(p => p.level === level);
     setSelectedLevel(level);
     setPassageQueue(queue);
@@ -104,13 +161,25 @@ export default function App() {
     if (nextIdx < passageQueue.length) {
       setCurrentPassage(passageQueue[nextIdx]);
     } else {
-      const nextLevel = selectedLevel + 1;
-      if (nextLevel <= 3 && !unlockedLevels.includes(nextLevel)) {
-        setUnlockedLevels(prev => [...prev, nextLevel]);
+      if (selectedLevel + 1 <= 3 && !unlockedLevels.includes(selectedLevel + 1)) {
+        setUnlockedLevels(prev => [...prev, selectedLevel + 1]);
       }
       setScreen('result');
     }
   }
+
+  function startWordGame(level) {
+    setWordGameLevel(level);
+    setWordGameScore(0);
+    setScreen('wordgame');
+  }
+
+  function onWordGameComplete(score) {
+    setWordGameScore(score);
+    setScreen('wordgame-result');
+  }
+
+  const goHome = () => setScreen('welcome');
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
@@ -118,7 +187,8 @@ export default function App() {
         <WelcomeScreen
           unlockedLevels={unlockedLevels}
           totalScore={totalScore}
-          onStart={startLevel}
+          onStartReading={startReading}
+          onStartWordGame={startWordGame}
         />
       )}
       {screen === 'reading' && currentPassage && (
@@ -129,7 +199,7 @@ export default function App() {
           level={selectedLevel}
           totalScore={totalScore}
           onComplete={onPassageComplete}
-          onHome={() => setScreen('welcome')}
+          onHome={goHome}
         />
       )}
       {screen === 'result' && (
@@ -137,9 +207,26 @@ export default function App() {
           level={selectedLevel}
           totalScore={totalScore}
           unlockedLevels={unlockedLevels}
-          onHome={() => setScreen('welcome')}
-          onNextLevel={() => startLevel(selectedLevel + 1)}
-          onRetry={() => startLevel(selectedLevel)}
+          onHome={goHome}
+          onNextLevel={() => startReading(selectedLevel + 1)}
+          onRetry={() => startReading(selectedLevel)}
+        />
+      )}
+      {screen === 'wordgame' && (
+        <WordGameScreen
+          level={wordGameLevel}
+          onHome={goHome}
+          onComplete={onWordGameComplete}
+        />
+      )}
+      {screen === 'wordgame-result' && (
+        <WordGameResult
+          level={wordGameLevel}
+          score={wordGameScore}
+          total={5}
+          onHome={goHome}
+          onRetry={() => startWordGame(wordGameLevel)}
+          onNextLevel={wordGameLevel < 3 ? () => startWordGame(wordGameLevel + 1) : null}
         />
       )}
     </div>
